@@ -1,4 +1,4 @@
-export class ResponseBody {
+export interface UserResponseBody {
    kind: string;
    localId: string;
    email: string;

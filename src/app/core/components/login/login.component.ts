@@ -1,19 +1,20 @@
-import { ResponseBody } from './../../../shared/models/response-body.model';
-import { User } from './../../models/user.model';
-import { HttpService } from './../../../shared/services/http.service';
-
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import { POST_SING_UP_USER } from 'src/app/shared/constants/constants';
-import { POST_SING_IN_USER } from 'src/app/shared/constants/constants';
 import { Observable } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+
+import { UserResponseBody } from './../../../shared/models/response-body.model';
+import { UserRequestBody } from './../../../shared/models/user-request-body.model';
+import { TokenService } from './../../../shared/services/token.service';
+import * as URLConstants from 'src/app/shared/constants/url-constants';
+import * as FirebaseErrors from './../../../shared/constants/firebase.errors';
+import * as UIMessages from '../../../shared/constants/ui-messages';
 
 @Component({
    selector: 'app-login',
@@ -25,17 +26,14 @@ export class LoginComponent implements OnInit {
    faLock = faLock;
    faUserCircle = faUserCircle;
 
-   isLogged = false;
-   error: string = null;
-
-   @Output()
-   dataSubmited: EventEmitter<User> = new EventEmitter<User>();
+   isLoginMode = false;
 
    constructor(
-      private httpService: HttpService,
       private fb: FormBuilder,
       private router: Router,
-      private toastr: ToastrService
+      private toastr: ToastrService,
+      private httpClient: HttpClient,
+      private tokenService: TokenService
    ) {}
 
    loginForm = this.fb.group({
@@ -58,38 +56,32 @@ export class LoginComponent implements OnInit {
          return null;
       }
 
-      const requestBody: object = {
+      const requestBody: UserRequestBody = {
          email: this.email,
          password: this.password,
          returnSecureToken: true
       };
 
-      const auth$: Observable<ResponseBody> = this.isLogged
-         ? this.httpService.post<object, ResponseBody>(requestBody, POST_SING_UP_USER())
-         : this.httpService.post<object, ResponseBody>(requestBody, POST_SING_IN_USER());
+      const auth$: Observable<UserResponseBody> = this.isLoginMode
+         ? this.httpClient.post<UserResponseBody>(URLConstants.POST_SIGN_UP_USER_URL, requestBody)
+         : this.httpClient.post<UserResponseBody>(URLConstants.POST_SIGN_IN_USER_URL, requestBody);
       auth$
          .pipe(
             catchError(err => {
-               this.error = err.error.error.message;
+               const error = err.error.error.message;
 
-               switch (this.error) {
-                  case 'INVALID_PASSWORD':
-                     this.toastr.error('Incorrect email or password', 'Error');
+               switch (error) {
+                  case FirebaseErrors.INVALID_PASSWORD:
+                     this.toastr.error(UIMessages.ERROR_INCORRECT_EMAIL_PASSWORD);
                      break;
-                  case 'EMAIL_EXISTS':
-                     this.toastr.error('Email exists', 'Error');
+                  case FirebaseErrors.EMAIL_EXISTS:
+                     this.toastr.error(UIMessages.ERROR_EMAIL_EXISTS);
                      break;
-                  case 'TOO_MANY_ATTEMPTS_TRY_LATER':
-                     this.toastr.error(
-                        'We have blocked all requests from this device due to unusual activity. Try again later.',
-                        'Error'
-                     );
+                  case FirebaseErrors.TOO_MANY_ATTEMPTS_TRY_LATER:
+                     this.toastr.error(UIMessages.ERROR_TOO_MANY_ATTEMPTS_TRY_LATER);
                      break;
-                  case 'EMAIL_NOT_FOUND':
-                     this.toastr.error(
-                        'There is no user record corresponding to this identifier. The user may have been deleted.',
-                        'Error'
-                     );
+                  case FirebaseErrors.EMAIL_NOT_FOUND:
+                     this.toastr.error(UIMessages.ERROR_EMAIL_NOT_FOUND);
                      break;
                }
                throw err;
@@ -97,17 +89,18 @@ export class LoginComponent implements OnInit {
          )
          .subscribe(response => {
             if (!response || !response.idToken) {
-               this.toastr.error('Incorrect response from Firebase', 'Error');
+               this.toastr.error(UIMessages.ERROR_INCORRECT_RESPONSE);
                return;
             }
-            localStorage.setItem('idToken', response.idToken);
+
+            this.tokenService.token = response.idToken;
             this.router.navigate(['']);
          });
 
       this.loginForm.reset();
    }
 
-   onClickCreateAccount() {
-      this.isLogged = !this.isLogged;
+   onToggleMode() {
+      this.isLoginMode = !this.isLoginMode;
    }
 }
