@@ -1,6 +1,5 @@
 import { ResponseBody } from './../../../shared/models/response-body.model';
 import { User } from './../../models/user.model';
-import { FirebaseResponse } from './../../../shared/models/firebase-response.model';
 import { HttpService } from './../../../shared/services/http.service';
 
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
@@ -98,7 +97,8 @@ export class LoginComponent implements OnInit {
          )
          .subscribe(response => {
             if (!response || !response.idToken) {
-               console.log('I saved: ', response); // To Do: return something
+               this.toastr.error('Incorrect response from Firebase', 'Error');
+               return;
             }
             localStorage.setItem('idToken', response.idToken);
             this.router.navigate(['']);

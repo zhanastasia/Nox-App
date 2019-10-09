@@ -13,13 +13,13 @@ export class TokenService {
       localStorage.setItem('idToken', idToken);
    }
 
-   getTokenExpirationDate(idToken: string) {
+   getTokenExpirationDate(idToken: string): Date {
       if (!idToken) {
-         return; // To Do: return something
+         return null;
       }
 
       const decoded = jwt_decode(idToken);
-      if (decoded.exp === undefined) {
+      if (!decoded.exp) {
          return null;
       }
 
@@ -31,7 +31,7 @@ export class TokenService {
 
    isTokenValid(idToken: string): boolean {
       const tokenExpirationDate = this.getTokenExpirationDate(idToken);
-      if (tokenExpirationDate === undefined) {
+      if (!tokenExpirationDate) {
          return false;
       }
 
