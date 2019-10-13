@@ -29,7 +29,11 @@ export class TokenService {
       return date;
    }
 
-   isTokenValid(idToken: string): boolean {
+   isTokenValid(idToken?: string): boolean {
+      if (!idToken) {
+         idToken = this.token;
+      }
+
       const tokenExpirationDate = this.getTokenExpirationDate(idToken);
       if (!tokenExpirationDate) {
          return false;
