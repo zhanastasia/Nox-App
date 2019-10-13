@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
-import { UserResponseBody } from './../../../shared/models/response-body.model';
-import { UserRequestBody } from './../../../shared/models/user-request-body.model';
+import { UserResponse } from '../../../shared/models/user-response.model';
+import { UserRequest } from '../../../shared/models/user-request.model';
 import { TokenService } from './../../../shared/services/token.service';
 import * as URLConstants from 'src/app/shared/constants/url-constants';
 import * as FirebaseErrors from './../../../shared/constants/firebase.errors';
@@ -56,15 +56,15 @@ export class LoginComponent implements OnInit {
          return null;
       }
 
-      const requestBody: UserRequestBody = {
+      const requestBody: UserRequest = {
          email: this.email,
          password: this.password,
          returnSecureToken: true
       };
 
-      const auth$: Observable<UserResponseBody> = this.isLoginMode
-         ? this.httpClient.post<UserResponseBody>(URLConstants.POST_SIGN_UP_USER_URL, requestBody)
-         : this.httpClient.post<UserResponseBody>(URLConstants.POST_SIGN_IN_USER_URL, requestBody);
+      const auth$: Observable<UserResponse> = this.isLoginMode
+         ? this.httpClient.post<UserResponse>(URLConstants.POST_SIGN_UP_USER_URL, requestBody)
+         : this.httpClient.post<UserResponse>(URLConstants.POST_SIGN_IN_USER_URL, requestBody);
       auth$
          .pipe(
             catchError(err => {

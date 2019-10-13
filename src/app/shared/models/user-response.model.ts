@@ -1,4 +1,4 @@
-export interface UserResponseBody {
+export interface UserResponse {
    kind: string;
    localId: string;
    email: string;
