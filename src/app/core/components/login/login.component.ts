@@ -26,15 +26,7 @@ export class LoginComponent implements OnInit {
    faLock = faLock;
    faUserCircle = faUserCircle;
 
-   isLoginMode = false;
-
-   constructor(
-      private fb: FormBuilder,
-      private router: Router,
-      private toastr: ToastrService,
-      private httpClient: HttpClient,
-      private tokenService: TokenService
-   ) {}
+   isSignInMode = false;
 
    loginForm = this.fb.group({
       email: this.fb.control('', Validators.required),
@@ -49,6 +41,14 @@ export class LoginComponent implements OnInit {
       return this.loginForm.get('password').value;
    }
 
+   constructor(
+      private fb: FormBuilder,
+      private router: Router,
+      private toastr: ToastrService,
+      private httpClient: HttpClient,
+      private tokenService: TokenService
+   ) {}
+
    ngOnInit() {}
 
    onSubmitLogin() {
@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
          returnSecureToken: true
       };
 
-      const auth$: Observable<UserResponse> = this.isLoginMode
+      const auth$: Observable<UserResponse> = this.isSignInMode
          ? this.httpClient.post<UserResponse>(URLConstants.POST_SIGN_UP_USER_URL, requestBody)
          : this.httpClient.post<UserResponse>(URLConstants.POST_SIGN_IN_USER_URL, requestBody);
       auth$
@@ -101,6 +101,6 @@ export class LoginComponent implements OnInit {
    }
 
    onToggleMode() {
-      this.isLoginMode = !this.isLoginMode;
+      this.isSignInMode = !this.isSignInMode;
    }
 }
