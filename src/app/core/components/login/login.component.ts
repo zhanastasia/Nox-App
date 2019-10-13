@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
    faLock = faLock;
    faUserCircle = faUserCircle;
 
-   isSignInMode = false;
+   isSignUpMode = false;
 
    loginForm = this.fb.group({
       email: this.fb.control('', Validators.required),
@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
          returnSecureToken: true
       };
 
-      const auth$: Observable<UserResponse> = this.isSignInMode
+      const auth$: Observable<UserResponse> = this.isSignUpMode
          ? this.httpClient.post<UserResponse>(URLConstants.POST_SIGN_UP_USER_URL, requestBody)
          : this.httpClient.post<UserResponse>(URLConstants.POST_SIGN_IN_USER_URL, requestBody);
       auth$
@@ -101,6 +101,6 @@ export class LoginComponent implements OnInit {
    }
 
    onToggleMode() {
-      this.isSignInMode = !this.isSignInMode;
+      this.isSignUpMode = !this.isSignUpMode;
    }
 }

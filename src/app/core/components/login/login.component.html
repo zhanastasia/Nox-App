@@ -26,13 +26,15 @@
          </div>
          <div class="form-group">
             <button class="btn signin-btn" type="submit">
-               {{ isSignInMode ? 'Sign Up' : 'Sign In' }}
+               {{ isSignUpMode ? 'Sign Up' : 'Sign In' }}
             </button>
          </div>
       </form>
-      <div class="login-footer" *ngIf="!isSignInMode">
-         Don`t have an account?
-         <button class="btn btn-link" (click)="onToggleMode()">Create one</button>
+      <div class="login-footer">
+         {{ !isSignUpMode ? 'Don`t have an account?' : 'Already have an account?' }}
+         <button class="btn btn-link" (click)="onToggleMode()">
+            {{ !isSignUpMode ? 'Create one' : 'Sign In' }}
+         </button>
       </div>
    </div>
 </div>
