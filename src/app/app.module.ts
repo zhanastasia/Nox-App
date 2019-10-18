@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
@@ -11,6 +11,8 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './core/components/header/header.component';
 import { EmptyComponent } from './core/components/empty/empty.component';
 import { LoginComponent } from './core/components/login/login.component';
+import { initApp } from './core/initializers/token-timeout.initializer';
+import { TokenService } from './shared/services/token.service';
 
 @NgModule({
    declarations: [AppComponent, HeaderComponent, EmptyComponent, LoginComponent],
@@ -27,7 +29,14 @@ import { LoginComponent } from './core/components/login/login.component';
          preventDuplicates: true
       })
    ],
-   providers: [],
+   providers: [
+      {
+         provide: APP_INITIALIZER,
+         useFactory: initApp,
+         multi: true,
+         deps: [TokenService]
+      }
+   ],
    bootstrap: [AppComponent]
 })
 export class AppModule {}
