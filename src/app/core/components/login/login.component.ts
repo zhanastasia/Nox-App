@@ -62,10 +62,8 @@ export class LoginComponent implements OnInit {
          returnSecureToken: true
       };
 
-      const auth$: Observable<UserResponse> = this.isSignUpMode
-         ? this.httpClient.post<UserResponse>(URLConstants.POST_SIGN_UP_USER_URL, requestBody)
-         : this.httpClient.post<UserResponse>(URLConstants.POST_SIGN_IN_USER_URL, requestBody);
-      auth$
+      this.tokenService
+         .requstToken(requestBody, this.isSignUpMode)
          .pipe(
             catchError(err => {
                const error = err.error.error.message;
