@@ -1,7 +1,14 @@
+import { Injectable, Injector } from '@angular/core';
+
 import { TokenService } from 'src/app/shared/services/token.service';
 
-export function initApp(tokenService: TokenService) {
-   return () => {
+@Injectable({ providedIn: 'root' })
+export class TokenTimeoutInitializer {
+   constructor(private injector: Injector) {}
+
+   initApp(): Promise<any> {
+      const tokenService = this.injector.get(TokenService);
+
       return new Promise(resolve => {
          const token: string = tokenService.token;
 
@@ -16,5 +23,5 @@ export function initApp(tokenService: TokenService) {
 
          resolve();
       });
-   };
+   }
 }

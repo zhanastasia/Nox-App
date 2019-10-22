@@ -11,8 +11,11 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './core/components/header/header.component';
 import { EmptyComponent } from './core/components/empty/empty.component';
 import { LoginComponent } from './core/components/login/login.component';
-import { initApp } from './core/initializers/token-timeout.initializer';
-import { TokenService } from './shared/services/token.service';
+import { TokenTimeoutInitializer } from './core/initializers/token-timeout.initializer';
+
+export function initializer(tokenTimeoutInit: TokenTimeoutInitializer) {
+   return () => tokenTimeoutInit.initApp();
+}
 
 @NgModule({
    declarations: [AppComponent, HeaderComponent, EmptyComponent, LoginComponent],
@@ -32,9 +35,9 @@ import { TokenService } from './shared/services/token.service';
    providers: [
       {
          provide: APP_INITIALIZER,
-         useFactory: initApp,
+         useFactory: initializer,
          multi: true,
-         deps: [TokenService]
+         deps: [TokenTimeoutInitializer]
       }
    ],
    bootstrap: [AppComponent]
