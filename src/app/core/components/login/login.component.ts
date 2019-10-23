@@ -1,18 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
-import { UserResponse } from '../../../shared/models/user-response.model';
 import { UserRequest } from '../../../shared/models/user-request.model';
 import { TokenService } from './../../../shared/services/token.service';
-import * as URLConstants from 'src/app/shared/constants/url-constants';
 import * as FirebaseErrors from './../../../shared/constants/firebase.errors';
 import * as UIMessages from '../../../shared/constants/ui-messages';
 
@@ -45,7 +41,6 @@ export class LoginComponent implements OnInit {
       private fb: FormBuilder,
       private router: Router,
       private toastr: ToastrService,
-      private httpClient: HttpClient,
       private tokenService: TokenService
    ) {}
 
@@ -62,10 +57,8 @@ export class LoginComponent implements OnInit {
          returnSecureToken: true
       };
 
-      const auth$: Observable<UserResponse> = this.isSignUpMode
-         ? this.httpClient.post<UserResponse>(URLConstants.POST_SIGN_UP_USER_URL, requestBody)
-         : this.httpClient.post<UserResponse>(URLConstants.POST_SIGN_IN_USER_URL, requestBody);
-      auth$
+      this.tokenService
+         .requstToken(requestBody, this.isSignUpMode)
          .pipe(
             catchError(err => {
                const error = err.error.error.message;
@@ -94,6 +87,11 @@ export class LoginComponent implements OnInit {
             }
 
             this.tokenService.token = response.idToken;
+            this.tokenService.refreshToken = response.refreshToken;
+            setTimeout(() => {
+               this.tokenService.renewToken();
+            }, +response.expiresIn - new Date(0).valueOf());
+
             this.router.navigate(['']);
          });
 
