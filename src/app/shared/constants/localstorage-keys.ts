@@ -1,2 +1,2 @@
 export const ID_TOKEN = 'idToken';
-export const REFRESH_TOKEN = 'refresh_token';
+export const REFRESH_TOKEN = 'refreshToken';
