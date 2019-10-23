@@ -9,8 +9,9 @@ import { RefreshTokenRequest } from '../models/refresh-token-request.model';
 import { TokenResponse } from './../models/token-response.model';
 import { UserResponse } from '../models/user-response.model';
 import { UserRequest } from '../models/user-request.model';
-import * as URLConstants from 'src/app/shared/constants/url-constants';
-import * as FirebaseConstants from 'src/app/shared/constants/firebase-constants';
+import * as URLConstants from './../../shared/constants/url-constants';
+import * as FirebaseConstants from './../../shared/constants/firebase-constants';
+import * as LocalstorageKyes from './../../shared/constants/localstorage-kyes';
 
 @Injectable({
    providedIn: 'root'
@@ -19,19 +20,19 @@ export class TokenService {
    constructor(private httpClient: HttpClient, private router: Router) {}
 
    get token(): string {
-      return localStorage.getItem('idToken');
+      return localStorage.getItem(LocalstorageKyes.ID_TOKEN);
    }
 
    set token(idToken: string) {
-      localStorage.setItem('idToken', idToken);
+      localStorage.setItem(LocalstorageKyes.ID_TOKEN, idToken);
    }
 
    get refreshToken(): string {
-      return localStorage.getItem(FirebaseConstants.GRAND_TYPE);
+      return localStorage.getItem(LocalstorageKyes.REFRESH_TOKEN);
    }
 
    set refreshToken(refreshToken: string) {
-      localStorage.setItem(FirebaseConstants.GRAND_TYPE, refreshToken);
+      localStorage.setItem(LocalstorageKyes.REFRESH_TOKEN, refreshToken);
    }
 
    getTokenExpirationDate(idToken: string) {

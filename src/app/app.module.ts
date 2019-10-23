@@ -13,7 +13,7 @@ import { EmptyComponent } from './core/components/empty/empty.component';
 import { LoginComponent } from './core/components/login/login.component';
 import { TokenTimeoutInitializer } from './core/initializers/token-timeout.initializer';
 
-export function initializer(tokenTimeoutInit: TokenTimeoutInitializer) {
+export function tokenTimeoutInitializer(tokenTimeoutInit: TokenTimeoutInitializer) {
    return () => tokenTimeoutInit.initApp();
 }
 
@@ -35,7 +35,7 @@ export function initializer(tokenTimeoutInit: TokenTimeoutInitializer) {
    providers: [
       {
          provide: APP_INITIALIZER,
-         useFactory: initializer,
+         useFactory: tokenTimeoutInitializer,
          multi: true,
          deps: [TokenTimeoutInitializer]
       }

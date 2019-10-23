@@ -1,6 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
 
-import { TokenService } from 'src/app/shared/services/token.service';
+import { TokenService } from './../../shared/services/token.service';
 
 @Injectable({ providedIn: 'root' })
 export class TokenTimeoutInitializer {
