@@ -6,6 +6,28 @@
    font-size: 130%;
 }
 
-.logout {
-   color: #f7ca18;
+/* 
+yellow more bright #ffcc00
+yellow #f7ca18 #f7b418 
+orange #fba519 #f08522
+*/
+.logout-btn {
+   color: #343a40;
+   background-color: #f7ca18;
+   font-weight: bold;
+}
+
+.logout-btn:hover,
+.logout-btn:active {
+   background-color: #f7b418;
+   transition: background-color 0.3s;
+}
+
+.logout-btn:focus {
+   outline: 0;
+   box-shadow: none !important;
+}
+
+.username {
+   color: #ffcc00;
 }

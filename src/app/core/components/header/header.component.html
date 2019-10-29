@@ -1,3 +1,13 @@
-<div class="navbar sticky-top navbar-dark bg-dark shadow-sm head-title">
-   <div class="col-8 title">{{ title }}</div>
+<div class="row navbar sticky-top navbar-dark bg-dark shadow-sm head-title">
+   <div class="col-md-7 title">{{ title }}</div>
+   <div class="col-md-5 userbar" *ngIf="isLoginMode">
+      <div class="row">
+         <div class="col-md-8 d-inline text-center">Hello, {{ username }}</div>
+         <div class="col-md-4 d-inline text-center">
+            <button type="button" class="btn logout-btn" (click)="logout()">
+               Logout
+            </button>
+         </div>
+      </div>
+   </div>
 </div>

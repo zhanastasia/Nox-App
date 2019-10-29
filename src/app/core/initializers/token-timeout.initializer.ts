@@ -13,7 +13,7 @@ export class TokenTimeoutInitializer {
          const token: string = tokenService.token;
 
          if (token) {
-            const expDate = tokenService.getTokenExpirationDate(token);
+            const expDate = tokenService.getTokenExpirationDate();
             const nowDate = new Date().valueOf();
 
             setTimeout(() => {

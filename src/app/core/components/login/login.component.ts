@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { UserRequest } from '../../../shared/models/user-request.model';
 import { TokenService } from './../../../shared/services/token.service';
+import { UserService } from './../../../shared/services/user.service';
 import * as FirebaseErrors from './../../../shared/constants/firebase.errors';
 import * as UIMessages from '../../../shared/constants/ui-messages';
 
@@ -41,7 +42,8 @@ export class LoginComponent implements OnInit {
       private fb: FormBuilder,
       private router: Router,
       private toastr: ToastrService,
-      private tokenService: TokenService
+      private tokenService: TokenService,
+      private userService: UserService
    ) {}
 
    ngOnInit() {}
@@ -88,9 +90,7 @@ export class LoginComponent implements OnInit {
 
             this.tokenService.token = response.idToken;
             this.tokenService.refreshToken = response.refreshToken;
-            setTimeout(() => {
-               this.tokenService.renewToken();
-            }, +response.expiresIn - new Date(0).valueOf());
+            this.tokenService.tokenTimer(+response.expiresIn, new Date(0).valueOf());
 
             this.router.navigate(['']);
          });
