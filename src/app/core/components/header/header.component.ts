@@ -1,9 +1,8 @@
-import { UpdateProfileRequest } from './../../../shared/models/update-profile-request';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { TokenService } from './../../../shared/services/token.service';
 import { UserService } from './../../../shared/services/user.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
    selector: 'app-header',
@@ -11,38 +10,23 @@ import { UserService } from './../../../shared/services/user.service';
    styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-   title = 'Nox App';
+   title = environment.appTitle;
    username: string;
 
    get isLoginMode(): boolean {
-      return this.tokenService.isTokenValid();
+      // return this.tokenService.isTokenValid();
+      return !!this.tokenService.token;
    }
 
-   constructor(private router: Router, private tokenService: TokenService, private userService: UserService) {}
+   constructor(private tokenService: TokenService, private userService: UserService) {}
 
-   ngOnInit() {
-      this.displayUsernameFromEmail();
-   }
+   ngOnInit() {}
 
    logout() {
-      const tokenTimer = this.tokenService.tokenTimeout;
-      this.tokenService.stopTokenTimer(tokenTimer);
-      this.tokenService.removeToken();
-      this.router.navigate(['login']);
+      this.tokenService.logout();
    }
 
-   displayUsernameFromEmail() {
-      const requestBody: UpdateProfileRequest = {
-         idToken: this.tokenService.token,
-         displayName: this.userService.parseEmail(this.tokenService.decodedToken.email),
-         photoUrl: '',
-         deleteAttribute: [],
-         returnSecureToken: false
-      };
-
-      this.userService.requstUpdateProfile(requestBody).subscribe(response => {
-         console.log('response', response);
-         this.username = response.displayName;
-      });
+   displayUsername() {
+      return this.userService.parseEmail(this.tokenService.decodedToken.email);
    }
 }

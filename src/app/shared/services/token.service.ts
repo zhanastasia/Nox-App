@@ -23,7 +23,6 @@ export class TokenService {
 
    constructor(private httpClient: HttpClient, private router: Router) {
       this.decodedToken = jwt_decode(this.token);
-      console.log('constructor', this.decodedToken);
    }
 
    get token(): string {
@@ -32,6 +31,7 @@ export class TokenService {
 
    set token(idToken: string) {
       localStorage.setItem(LocalStorageKeys.ID_TOKEN, idToken);
+      this.decodedToken = jwt_decode(this.token);
    }
 
    get refreshToken(): string {
@@ -44,17 +44,16 @@ export class TokenService {
 
    getTokenExpirationDate() {
       const date = new Date(0);
-      date.setUTCSeconds(this.decodedToken.exp);
+      if (this.decodedToken) {
+         date.setUTCSeconds(this.decodedToken.exp);
+      }
 
       return date;
    }
 
-   isTokenValid(idToken?: string): boolean {
-      if (!idToken) {
-         idToken = this.token;
-      }
-
+   isTokenValid(): boolean {
       const tokenExpirationDate = this.getTokenExpirationDate();
+
       if (!tokenExpirationDate) {
          return false;
       }
@@ -87,7 +86,6 @@ export class TokenService {
          .subscribe(response => {
             this.token = response.id_token;
             this.refreshToken = response.refresh_token;
-            this.decodedToken.exp = +response.expires_in;
          });
    }
 
@@ -96,10 +94,17 @@ export class TokenService {
       localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN);
    }
 
-   tokenTimer(expDate: number, nowDate: number) {
+   logout() {
+      this.stopTokenTimer(this.tokenTimeout);
+      this.removeToken();
+      this.decodedToken = null;
+      this.router.navigate(['login']);
+   }
+
+   tokenTimer(expDate: number) {
       this.tokenTimeout = setTimeout(() => {
          this.renewToken();
-      }, expDate - nowDate);
+      }, expDate - new Date().valueOf());
    }
 
    stopTokenTimer(tokenTimeout: number) {
