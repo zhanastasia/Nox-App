@@ -11,11 +11,15 @@ import { environment } from 'src/environments/environment';
 })
 export class HeaderComponent implements OnInit {
    title = environment.appTitle;
-   username: string;
 
    get isLoginMode(): boolean {
-      // return this.tokenService.isTokenValid();
       return !!this.tokenService.token;
+   }
+
+   get username(): string {
+      if (this.tokenService.decodedToken) {
+         return this.userService.extractUsername(this.tokenService.decodedToken.email);
+      }
    }
 
    constructor(private tokenService: TokenService, private userService: UserService) {}
@@ -23,10 +27,7 @@ export class HeaderComponent implements OnInit {
    ngOnInit() {}
 
    logout() {
+      this.tokenService.token = null;
       this.tokenService.logout();
-   }
-
-   displayUsername() {
-      return this.userService.parseEmail(this.tokenService.decodedToken.email);
    }
 }

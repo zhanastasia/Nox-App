@@ -22,7 +22,11 @@ export class TokenService {
    decodedToken: Token;
 
    constructor(private httpClient: HttpClient, private router: Router) {
-      this.decodedToken = jwt_decode(this.token);
+      if (this.token) {
+         this.decodedToken = jwt_decode(this.token);
+      } else {
+         this.decodedToken = null;
+      }
    }
 
    get token(): string {
@@ -30,8 +34,20 @@ export class TokenService {
    }
 
    set token(idToken: string) {
-      localStorage.setItem(LocalStorageKeys.ID_TOKEN, idToken);
-      this.decodedToken = jwt_decode(this.token);
+      if (!idToken) {
+         this.decodedToken = null;
+         clearTimeout(this.tokenTimeout);
+
+         localStorage.removeItem(LocalStorageKeys.ID_TOKEN);
+         localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN);
+      } else {
+         localStorage.setItem(LocalStorageKeys.ID_TOKEN, idToken);
+         this.decodedToken = jwt_decode(this.token);
+
+         this.tokenTimeout = setTimeout(() => {
+            this.renewToken();
+         }, this.tokenExpirationDate - new Date().valueOf());
+      }
    }
 
    get refreshToken(): string {
@@ -42,23 +58,22 @@ export class TokenService {
       localStorage.setItem(LocalStorageKeys.REFRESH_TOKEN, refreshToken);
    }
 
-   getTokenExpirationDate() {
+   get tokenExpirationDate(): number {
       const date = new Date(0);
+
       if (this.decodedToken) {
          date.setUTCSeconds(this.decodedToken.exp);
       }
 
-      return date;
+      return date.valueOf();
    }
 
    isTokenValid(): boolean {
-      const tokenExpirationDate = this.getTokenExpirationDate();
-
-      if (!tokenExpirationDate) {
+      if (!this.tokenExpirationDate) {
          return false;
       }
 
-      return new Date().valueOf() < tokenExpirationDate.valueOf();
+      return new Date().valueOf() < this.tokenExpirationDate;
    }
 
    requstToken(requestBody: UserRequest, isSignUpMode: boolean) {
@@ -89,25 +104,7 @@ export class TokenService {
          });
    }
 
-   removeToken() {
-      localStorage.removeItem(LocalStorageKeys.ID_TOKEN);
-      localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN);
-   }
-
    logout() {
-      this.stopTokenTimer(this.tokenTimeout);
-      this.removeToken();
-      this.decodedToken = null;
       this.router.navigate(['login']);
-   }
-
-   tokenTimer(expDate: number) {
-      this.tokenTimeout = setTimeout(() => {
-         this.renewToken();
-      }, expDate - new Date().valueOf());
-   }
-
-   stopTokenTimer(tokenTimeout: number) {
-      clearTimeout(tokenTimeout);
    }
 }

@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class UserService {
    constructor() {}
 
-   parseEmail(email: string) {
+   extractUsername(email: string) {
       return email.substring(0, email.lastIndexOf('@'));
    }
 }

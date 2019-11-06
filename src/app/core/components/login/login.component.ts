@@ -88,7 +88,6 @@ export class LoginComponent implements OnInit {
 
             this.tokenService.token = response.idToken;
             this.tokenService.refreshToken = response.refreshToken;
-            this.tokenService.tokenTimer(this.tokenService.getTokenExpirationDate().valueOf());
 
             this.router.navigate(['']);
          });

@@ -2,7 +2,7 @@
    <div class="col-md-7 title">{{ title }}</div>
    <div class="col-md-5 userbar" *ngIf="isLoginMode">
       <div class="row">
-         <div class="col-md-8 d-inline text-center">Hello, {{ displayUsername() }}</div>
+         <div class="col-md-8 d-inline text-center">Hello, {{ username }}</div>
          <div class="col-md-4 d-inline text-center">
             <button type="button" class="btn logout-btn" (click)="logout()">
                Logout
