@@ -37,12 +37,10 @@ export class TokenService {
       if (!idToken) {
          this.decodedToken = null;
          clearTimeout(this.tokenTimeout);
-
          localStorage.removeItem(LocalStorageKeys.ID_TOKEN);
-         localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN);
       } else {
+         this.decodedToken = jwt_decode(idToken);
          localStorage.setItem(LocalStorageKeys.ID_TOKEN, idToken);
-         this.decodedToken = jwt_decode(this.token);
 
          this.tokenTimeout = setTimeout(() => {
             this.renewToken();
@@ -55,7 +53,11 @@ export class TokenService {
    }
 
    set refreshToken(refreshToken: string) {
-      localStorage.setItem(LocalStorageKeys.REFRESH_TOKEN, refreshToken);
+      if (!refreshToken) {
+         localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN);
+      } else {
+         localStorage.setItem(LocalStorageKeys.REFRESH_TOKEN, refreshToken);
+      }
    }
 
    get tokenExpirationDate(): number {
@@ -105,6 +107,8 @@ export class TokenService {
    }
 
    logout() {
+      this.token = null;
+      this.refreshToken = null;
       this.router.navigate(['login']);
    }
 }

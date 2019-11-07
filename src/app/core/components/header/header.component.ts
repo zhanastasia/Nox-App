@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 export class HeaderComponent implements OnInit {
    title = environment.appTitle;
 
-   get isLoginMode(): boolean {
+   get isAuthenticated(): boolean {
       return !!this.tokenService.token;
    }
 
@@ -27,7 +27,6 @@ export class HeaderComponent implements OnInit {
    ngOnInit() {}
 
    logout() {
-      this.tokenService.token = null;
       this.tokenService.logout();
    }
 }
