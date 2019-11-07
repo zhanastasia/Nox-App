@@ -4,5 +4,6 @@
 
 export const environment = {
    production: false,
-   apiKeyUrl: 'AIzaSyAfAY0epIj65g7ceQLDwqERnrl91cCPbIQ'
+   apiKeyUrl: 'AIzaSyAfAY0epIj65g7ceQLDwqERnrl91cCPbIQ',
+   appTitle: 'Nox App'
 };

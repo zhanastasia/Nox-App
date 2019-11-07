@@ -9,6 +9,7 @@ import { RefreshTokenRequest } from '../models/refresh-token-request.model';
 import { TokenResponse } from './../models/token-response.model';
 import { UserResponse } from '../models/user-response.model';
 import { UserRequest } from '../models/user-request.model';
+import { Token } from '../models/token';
 import * as URLConstants from './../../shared/constants/url-constants';
 import * as FirebaseConstants from './../../shared/constants/firebase-constants';
 import * as LocalStorageKeys from '../constants/localstorage-keys';
@@ -17,14 +18,34 @@ import * as LocalStorageKeys from '../constants/localstorage-keys';
    providedIn: 'root'
 })
 export class TokenService {
-   constructor(private httpClient: HttpClient, private router: Router) {}
+   tokenTimeout: any;
+   decodedToken: Token;
+
+   constructor(private httpClient: HttpClient, private router: Router) {
+      if (this.token) {
+         this.decodedToken = jwt_decode(this.token);
+      } else {
+         this.decodedToken = null;
+      }
+   }
 
    get token(): string {
       return localStorage.getItem(LocalStorageKeys.ID_TOKEN);
    }
 
    set token(idToken: string) {
-      localStorage.setItem(LocalStorageKeys.ID_TOKEN, idToken);
+      if (!idToken) {
+         this.decodedToken = null;
+         clearTimeout(this.tokenTimeout);
+         localStorage.removeItem(LocalStorageKeys.ID_TOKEN);
+      } else {
+         this.decodedToken = jwt_decode(idToken);
+         localStorage.setItem(LocalStorageKeys.ID_TOKEN, idToken);
+
+         this.tokenTimeout = setTimeout(() => {
+            this.renewToken();
+         }, this.tokenExpirationDate - new Date().valueOf());
+      }
    }
 
    get refreshToken(): string {
@@ -32,36 +53,29 @@ export class TokenService {
    }
 
    set refreshToken(refreshToken: string) {
-      localStorage.setItem(LocalStorageKeys.REFRESH_TOKEN, refreshToken);
+      if (!refreshToken) {
+         localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN);
+      } else {
+         localStorage.setItem(LocalStorageKeys.REFRESH_TOKEN, refreshToken);
+      }
    }
 
-   getTokenExpirationDate(idToken: string) {
-      if (!idToken) {
-         return null;
-      }
-
-      const decoded = jwt_decode(idToken);
-      if (!decoded.exp) {
-         return null;
-      }
-
+   get tokenExpirationDate(): number {
       const date = new Date(0);
-      date.setUTCSeconds(decoded.exp);
 
-      return date;
-   }
-
-   isTokenValid(idToken?: string): boolean {
-      if (!idToken) {
-         idToken = this.token;
+      if (this.decodedToken) {
+         date.setUTCSeconds(this.decodedToken.exp);
       }
 
-      const tokenExpirationDate = this.getTokenExpirationDate(idToken);
-      if (!tokenExpirationDate) {
+      return date.valueOf();
+   }
+
+   isTokenValid(): boolean {
+      if (!this.tokenExpirationDate) {
          return false;
       }
 
-      return new Date().valueOf() < tokenExpirationDate.valueOf();
+      return new Date().valueOf() < this.tokenExpirationDate;
    }
 
    requstToken(requestBody: UserRequest, isSignUpMode: boolean) {
@@ -90,5 +104,11 @@ export class TokenService {
             this.token = response.id_token;
             this.refreshToken = response.refresh_token;
          });
+   }
+
+   logout() {
+      this.token = null;
+      this.refreshToken = null;
+      this.router.navigate(['login']);
    }
 }
