@@ -1,0 +1,28 @@
+.head-title {
+   color: #ffffff;
+}
+
+.title {
+   font-size: 130%;
+}
+
+.logout-btn {
+   color: #343a40;
+   background-color: #f7ca18;
+   font-weight: bold;
+}
+
+.logout-btn:hover,
+.logout-btn:active {
+   background-color: #f7b418;
+   transition: background-color 0.3s;
+}
+
+.logout-btn:focus {
+   outline: 0;
+   box-shadow: none !important;
+}
+
+.username {
+   color: #ffcc00;
+}
