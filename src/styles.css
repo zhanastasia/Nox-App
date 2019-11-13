@@ -1,7 +1,11 @@
-body {
-    font-family: 'Lato', 'Arial', sans-serif;
-    font-weight: 300;
-    font-size: 20px;
+html {
+   min-width: 400px;
+}
 
-    background-color: #f0f0f0;
+body {
+   font-family: 'Lato', 'Arial', sans-serif;
+   font-weight: 300;
+   font-size: 20px;
+
+   background-color: #f0f0f0;
 }

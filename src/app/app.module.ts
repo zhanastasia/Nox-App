@@ -9,16 +9,16 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './core/components/header/header.component';
-import { EmptyComponent } from './core/components/empty/empty.component';
 import { LoginComponent } from './core/components/login/login.component';
 import { TokenTimeoutInitializer } from './core/initializers/token-timeout.initializer';
+import { MoviesComponent } from './core/components/movies/movies.component';
 
 export function tokenTimeoutInitializer(tokenTimeoutInit: TokenTimeoutInitializer) {
    return () => tokenTimeoutInit.initApp();
 }
 
 @NgModule({
-   declarations: [AppComponent, HeaderComponent, EmptyComponent, LoginComponent],
+   declarations: [AppComponent, HeaderComponent, LoginComponent, MoviesComponent],
    imports: [
       BrowserModule,
       HttpClientModule,
