@@ -11,7 +11,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './core/components/header/header.component';
 import { LoginComponent } from './core/components/login/login.component';
 import { TokenTimeoutInitializer } from './core/initializers/token-timeout.initializer';
-import { MoviesComponent } from './features/movies/movies.component';
+import { MoviesComponent } from './features/movies/components/movies.component';
 
 export function tokenTimeoutInitializer(tokenTimeoutInit: TokenTimeoutInitializer) {
    return () => tokenTimeoutInit.initApp();
