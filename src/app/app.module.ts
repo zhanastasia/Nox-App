@@ -11,14 +11,14 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './core/components/header/header.component';
 import { LoginComponent } from './core/components/login/login.component';
 import { TokenTimeoutInitializer } from './core/initializers/token-timeout.initializer';
-import { MoviesComponent } from './features/movies/components/movies.component';
+import { MovieModule } from './features/movies/movie.module';
 
 export function tokenTimeoutInitializer(tokenTimeoutInit: TokenTimeoutInitializer) {
    return () => tokenTimeoutInit.initApp();
 }
 
 @NgModule({
-   declarations: [AppComponent, HeaderComponent, LoginComponent, MoviesComponent],
+   declarations: [AppComponent, HeaderComponent, LoginComponent],
    imports: [
       BrowserModule,
       HttpClientModule,
@@ -26,6 +26,7 @@ export function tokenTimeoutInitializer(tokenTimeoutInit: TokenTimeoutInitialize
       FontAwesomeModule,
       ReactiveFormsModule,
       BrowserAnimationsModule,
+      MovieModule,
       ToastrModule.forRoot({
          timeOut: 10000,
          positionClass: 'toast-top-full-width',

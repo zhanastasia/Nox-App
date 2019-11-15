@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { MoviesComponent } from './features/movies/components/movies.component';
 import { LoginComponent } from './core/components/login/login.component';
-import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
-   { path: '', component: MoviesComponent, canActivate: [AuthGuard] },
-   { path: 'login', component: LoginComponent }
+   { path: 'login', component: LoginComponent },
+   {
+      path: '',
+      loadChildren: () => import('./features/movies/movie.module').then(m => m.MovieModule)
+   }
 ];
 
 @NgModule({
