@@ -1,0 +1,62 @@
+.shadow {
+   box-shadow: 4px 4px 10px #e4e4e4;
+}
+
+.card img {
+   transform: scale(1);
+}
+
+.card img:hover {
+   transform: scale(1.08);
+   transition: transform 0.3s;
+}
+
+.card-title {
+   font-size: 90%;
+   text-align: center;
+}
+
+.card-body p {
+   font-size: 70%;
+   color: #585858;
+   text-align: justify;
+}
+
+.movie-card-row {
+   justify-content: center;
+   width: 100%;
+   margin: 0 auto;
+}
+
+.scrollable {
+   height: 170px;
+   scrollbar-width: none;
+   overflow-y: scroll;
+}
+
+.scrollable::-webkit-scrollbar {
+   height: 170px;
+   overflow: none;
+}
+
+.tags {
+   background-color: #f7ca18;
+   border-radius: 20px;
+   border: none;
+   color: #343a40;
+   margin-right: 3px;
+   margin-bottom: 3px;
+   font-size: 70%;
+}
+
+.tags:hover,
+.tags:active {
+   color: #343a40;
+   background-color: #f7b418;
+   transition: background-color 0.3s;
+}
+
+.tags:focus {
+   outline: 0;
+   box-shadow: none !important;
+}

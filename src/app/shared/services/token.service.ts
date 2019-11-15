@@ -9,7 +9,7 @@ import { RefreshTokenRequest } from '../models/refresh-token-request.model';
 import { TokenResponse } from './../models/token-response.model';
 import { UserResponse } from '../models/user-response.model';
 import { UserRequest } from '../models/user-request.model';
-import { Token } from '../models/token';
+import { Token } from '../models/token.model';
 import * as URLConstants from './../../shared/constants/url-constants';
 import * as FirebaseConstants from './../../shared/constants/firebase-constants';
 import * as LocalStorageKeys from '../constants/localstorage-keys';

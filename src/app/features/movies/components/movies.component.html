@@ -1,0 +1,18 @@
+<div class="card-group">
+   <div class="container-fluid">
+      <div class="row movie-card-row">
+         <div class="card col-md-3 col-sm-4 col-6 m-3 p-0 shadow" *ngFor="let movie of movies">
+            <a href="#">
+               <img class="card-img-top" [src]="movie.img" alt="" />
+            </a>
+            <div class="card-body">
+               <h4 class="card-title">{{ movie.title }}</h4>
+               <p class="card-text scrollable">{{ movie.about }}</p>
+            </div>
+            <div class="card-footer p-2">
+               <button class="btn tags">{{ movie.tags }}</button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
